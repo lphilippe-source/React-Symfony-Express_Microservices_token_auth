@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller\Services;
+namespace App\Services;
 
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,6 +31,7 @@ private $response;
     
     public function getResponse(){
         // dd($this->response);
+
         return $this->response;
     }
 }

@@ -30,7 +30,7 @@ class JWTEncodedListener{
         
     //     $user = $event2->getUser();
 
-        $myfile = fopen("/home/lphilippe/ASTON/archi/3tiercorrection/cdnt12-architecture/microServices/tokenApi/test/truc.html", "w") or dd("Unable to open file!");
+        $myfile = fopen("/home/lphilippe/Documents/microServices/tokenApi/test/truc.html", "w") or dd("Unable to open file!");
             $txt = $token;
             fwrite($myfile, $txt);
             fclose($myfile);
