@@ -36,9 +36,10 @@ class UserController extends AbstractController {
         // return new Response($lastUsername);
         $user = $this->getUser();
         // dd($user);
-        return new JsonResponse([
-            'email' => $user->getEmail(),
-            'roles' => $user->getRoles(),
-        ]);    
+        // return new JsonResponse([
+        //     'email' => $user->getEmail(),
+        //     'roles' => $user->getRoles(),
+        // ]);    
+        return new JsonResponse(['ok']);
     }
 }

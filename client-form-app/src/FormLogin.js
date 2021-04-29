@@ -23,8 +23,9 @@ export const FormLogin = () => {
   const [isPending,setPending] = useState(true)
   const[token,setToken] = useState(null)
 
+    useEffect(()=>{
   const getData = async () => {
-    const url = "http://localhost:8000/api/login_check"
+    const url = "https://localhost:8000/api/login_check"
     const options={
         method:'POST',
         headers: {
@@ -50,10 +51,9 @@ export const FormLogin = () => {
                         setPending(false)
                     })
       }
-    useEffect(()=>{
         isSubmited && getData()
         
-        return console.log('cleanup',token)
+        return console.log('cleanup')
     },[isSubmited])
 
   const onFinish = (values) => {
