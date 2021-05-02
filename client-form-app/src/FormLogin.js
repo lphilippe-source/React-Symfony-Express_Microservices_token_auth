@@ -53,7 +53,7 @@ export const FormLogin = () => {
       }
         isSubmited && getData()
         
-        return console.log('cleanup')
+        return console.log('ok')
     },[isSubmited])
 
   const onFinish = (values) => {
