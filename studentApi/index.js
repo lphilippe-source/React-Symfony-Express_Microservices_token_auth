@@ -30,6 +30,14 @@ db.sequelizeConnect.sync().then(() => {
   //     console.log(e)
   //   }
   // }
+
+  app.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*")
+  res.setHeader("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept")
+  res.setHeader("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH,OPTIONS")
+  next()
+})
+
   const setGrade = (req,res,next)=>{
     console.log(req.body)
     console.log(typeof req.body.grades)
@@ -49,11 +57,6 @@ db.sequelizeConnect.sync().then(() => {
     console.log("Drop and re-sync db.");
   })
 })
-
-
-
-
-
 // // setting du moteur de rendu
 // app.set('view engine', 'pug');
 
@@ -66,7 +69,6 @@ db.sequelizeConnect.sync().then(() => {
 
 //   const { title } = req.query;
 //   var view = '';
-
 //   if (title) {
 //     view = `
 //     <html>
