@@ -1,6 +1,7 @@
 import { Form, Input, Button, Checkbox } from 'antd';
 import 'antd/dist/antd.css';
-import { useEffect,useState } from 'react';
+import { useEffect,useState,useContext } from 'react';
+import { tokenContext } from './context';
 
 const layout = {
   labelCol: {
@@ -21,8 +22,8 @@ export const FormLogin = () => {
   const [isSubmited,setIsSubmited] = useState(null)
   const[error,setError] = useState(null)
   const [isPending,setPending] = useState(true)
-  const[token,setToken] = useState(null)
-
+  const{token,setToken} = useContext(tokenContext)
+console.log(token)
     useEffect(()=>{
   const getData = async () => {
     const url = "https://localhost:8000/api/login_check"
@@ -54,7 +55,7 @@ export const FormLogin = () => {
         isSubmited && getData()
         
         return console.log('ok')
-    },[isSubmited])
+    },[isSubmited,setToken])
 
   const onFinish = (values) => {
    
