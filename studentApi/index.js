@@ -1,7 +1,7 @@
 const students = require('./data/students.json');
 const express = require('express');
 const app = express();
-const PORT = 8000;
+const PORT = 8080;
 const fs = require('fs');
 // const { list, all, allStudents } = require('./controllers/StudentController');
 
@@ -30,13 +30,12 @@ db.sequelizeConnect.sync().then(() => {
   //     console.log(e)
   //   }
   // }
-
   app.use(function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "*")
-  res.setHeader("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept")
-  res.setHeader("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH,OPTIONS")
-  next()
-})
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept")
+    res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH,OPTIONS")
+    next()
+  })
 
   const setGrade = (req,res,next)=>{
     console.log(req.body)
@@ -50,7 +49,18 @@ db.sequelizeConnect.sync().then(() => {
     return res.send(200,{message:"ok"})
   
   }
+
+  const getStudents = async (req,res,next)=>{
+    const students = await db.student.findAll();
+    // console.log(students.every(user => user instanceof Student)); // true
+    console.log("All students:", JSON.stringify(students, null, 2));  
+       res.header("Access-Control-Allow-Origin", "*")
+    res.header("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept")
+    res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH,OPTIONS")
+    return res.send(200, JSON.stringify(students, null, 2))
+  }
   app.post('/grades',setGrade)
+  app.get('/students',getStudents) 
 
   app.listen(PORT, () => {
     console.log('Server running on port ' + PORT);
