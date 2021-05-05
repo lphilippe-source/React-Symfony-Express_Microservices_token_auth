@@ -54,15 +54,15 @@ db.sequelizeConnect.sync().then(() => {
   }
 
   const getStudents = async (req, res, next) => {
-    const students = db.student.findAll();
+     const students =await db.student.findAll();
     // console.log(students.every(user => user instanceof Student)); // true
     console.log("All students:", JSON.stringify(students, null, 2));
     console.log('token: ', req.header("Authorization"))
-    const httpsAgent = new https.Agent({
-      cert: fs.readFileSync('./security/cert.pem'),
-      key: fs.readFileSync('./security/key.pem')
+    // const httpsAgent = new https.Agent({
+    //   cert: fs.readFileSync('./security/cert.pem'),
+    //   key: fs.readFileSync('./security/key.pem')
       // ca: fs.readFileSync('ca.crt'),
-    });
+    // });
     const instance = axios.create({
       headers: {
         'Authorization': req.header("Authorization"),
@@ -71,7 +71,7 @@ db.sequelizeConnect.sync().then(() => {
       }
 
     })
-    instance.get('https://localhost:8000/api/check_token',{ httpsAgent })
+     return await instance.get('http://localhost:8000/api/check_token')
       .then((data) => {
         console.log("databody: ", data)
       })
@@ -94,6 +94,7 @@ db.sequelizeConnect.sync().then(() => {
         }
         console.log(error.config);
       })
+    // return res.status(200).send(JSON.stringify(students, null, 2))
   }
   app.post('/grades', setGrade)
   app.get('/students', getStudents)
@@ -102,7 +103,8 @@ db.sequelizeConnect.sync().then(() => {
     key: fs.readFileSync('./security/key.pem'),
     cert: fs.readFileSync('./security/cert.pem')
   }
-  https.createServer(httpsOptions, app).listen(PORT, () => {
+  // https.createServer(httpsOptions, app).
+  app.listen(PORT, () => {
     console.log('Server running on port ' + PORT);
     console.log("Drop and re-sync db.");
   })

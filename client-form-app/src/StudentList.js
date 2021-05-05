@@ -11,7 +11,7 @@ const StudentList = () => {
   useEffect(() => {
     const getData = async (data) => {
 
-      const url = 'https://localhost:8080/students'
+      const url = 'http://localhost:8080/students'
       const options = {
         method: 'GET',
         headers: {
@@ -31,6 +31,7 @@ const StudentList = () => {
         })
         .then((data) => {
           setList(data)
+          console.log(data)
           setPending(false)
           setError(null)
           console.log(data)

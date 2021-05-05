@@ -29,7 +29,7 @@ export const FormLogin = () => {
 
   useEffect(() => {
     const getData =  () => {
-      const url = "https://localhost:8000/api/login_check"
+      const url = "http://localhost:8000/api/login_check"
       const options = {
         method: 'POST',
         headers: {
