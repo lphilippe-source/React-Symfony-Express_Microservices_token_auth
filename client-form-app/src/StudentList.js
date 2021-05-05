@@ -11,7 +11,7 @@ const StudentList = () => {
   useEffect(() => {
     const getData = async (data) => {
 
-      const url = 'http://localhost:8080/students'
+      const url = 'https://localhost:8080/students'
       const options = {
         method: 'GET',
         headers: {

@@ -1,11 +1,14 @@
 const students = require('./data/students.json');
 const express = require('express');
+const https = require('https')
 const app = express();
 const PORT = 8080;
 const fs = require('fs');
+const axios = require('axios')
 // const { list, all, allStudents } = require('./controllers/StudentController');
 
 const db = require("./models");
+
 // { force: true }
 db.sequelizeConnect.sync().then(() => {
 
@@ -37,88 +40,70 @@ db.sequelizeConnect.sync().then(() => {
     next()
   })
 
-  const setGrade = (req,res,next)=>{
+  const setGrade = (req, res, next) => {
     console.log(req.body)
     console.log(typeof req.body.grades)
     console.log(typeof req.body.studentId)
 
-    db.grades.create({ 
-      grades:req.body.grades,
-      studentId:req.body.studentId
+    db.grades.create({
+      grades: req.body.grades,
+      studentId: req.body.studentId
     })
-    return res.send(200,{message:"ok"})
-  
+    return res.send(200, { message: "ok" })
+
   }
 
-  const getStudents = async (req,res,next)=>{
-    const students = await db.student.findAll();
+  const getStudents = async (req, res, next) => {
+    const students = db.student.findAll();
     // console.log(students.every(user => user instanceof Student)); // true
-    console.log("All students:", JSON.stringify(students, null, 2));  
-       res.header("Access-Control-Allow-Origin", "*")
-    res.header("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept")
-    res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH,OPTIONS")
-    return res.send(200, JSON.stringify(students, null, 2))
-  }
-  app.post('/grades',setGrade)
-  app.get('/students',getStudents) 
+    console.log("All students:", JSON.stringify(students, null, 2));
+    console.log('token: ', req.header("Authorization"))
+    const httpsAgent = new https.Agent({
+      cert: fs.readFileSync('./security/cert.pem'),
+      key: fs.readFileSync('./security/key.pem')
+      // ca: fs.readFileSync('ca.crt'),
+    });
+    const instance = axios.create({
+      headers: {
+        'Authorization': req.header("Authorization"),
+        'Content-Type': 'application/json',
+        'User-Agent': 'Axios 0.21.1'
+      }
 
-  app.listen(PORT, () => {
+    })
+    instance.get('https://localhost:8000/api/check_token',{ httpsAgent })
+      .then((data) => {
+        console.log("databody: ", data)
+      })
+      .then(() => res.status(200).send(JSON.stringify(students, null, 2)))
+      .catch(function (error) {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
+      })
+  }
+  app.post('/grades', setGrade)
+  app.get('/students', getStudents)
+
+  const httpsOptions = {
+    key: fs.readFileSync('./security/key.pem'),
+    cert: fs.readFileSync('./security/cert.pem')
+  }
+  https.createServer(httpsOptions, app).listen(PORT, () => {
     console.log('Server running on port ' + PORT);
     console.log("Drop and re-sync db.");
   })
 })
-// // setting du moteur de rendu
-// app.set('view engine', 'pug');
-
-// // routage
-// app.get('/', (req, res) => {
-//   res.send('coucou');
-// })
-
-// app.get('/test1', (req, res) => {
-
-//   const { title } = req.query;
-//   var view = '';
-//   if (title) {
-//     view = `
-//     <html>
-//       <head>
-//         <title>${title}</title>
-//       </head>
-//       <body>
-//         <h1 style="color:orange">${title}</h1>
-//       </body>
-//     </html>
-//   `;
-//   } else {
-//     view = 'Bad request';
-//   }
-
-//   res.send(view);
-// })
-
-// app.get('/test2', (req, res) => {
-//   var view = fs.readFileSync('templates/test2.aston');
-//   var {title} = req.query;
-//   var viewStr = view.toString();
-//   var newView = 
-//   viewStr
-//     .replace('[[ title ]]', title)
-//     .replace('[[ title ]]', title);
-  
-//   res.send(newView);
-// })
-
-// app.get('/test3', (req, res) => {
-//   res.render('test3', { 
-//     title: req.query.title, 
-//     students: ['Jérérmy','Clémentine','Umberto'] })
-// })
-
-// app.get('/student', (req, res) => {
-//   var students = list();
-//   res.render('student/list', { students })
-// })
-
-// // lien direct entre une route à une méthode de contrôleur
-// app.get('/student/all', allStudents)
